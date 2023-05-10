@@ -1,0 +1,241 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0-windows7.0": {
+      "Newtonsoft.Json/13.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Syncfusion.Compression.Base/21.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0-windows7.0/Syncfusion.Compression.Base.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/Syncfusion.Compression.Base.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Syncfusion.Licensing/21.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0-windows7.0/Syncfusion.Licensing.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0-windows7.0/Syncfusion.Licensing.dll": {}
+        }
+      },
+      "Syncfusion.Pdf.WinForms/21.2.3": {
+        "type": "package",
+        "dependencies": {
+          "Syncfusion.Compression.Base": "21.2.3",
+          "Syncfusion.Licensing": "21.2.3"
+        },
+        "compile": {
+          "lib/net6.0-windows7.0/Syncfusion.Pdf.Base.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/Syncfusion.Pdf.Base.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Newtonsoft.Json/13.0.3": {
+      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/net6.0/Newtonsoft.Json.dll",
+        "lib/net6.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.3.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "Syncfusion.Compression.Base/21.2.3": {
+      "sha512": "r3Mfi0+x7P6UgxcUg5TxvT1yGa7uOlRzNEpw/f/NpAo4NClCszACMMIPs2ZSTIHfCCZzrbYfWmzTRCHsguND6A==",
+      "type": "package",
+      "path": "syncfusion.compression.base/21.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/net40/Syncfusion.Compression.Base.dll",
+        "lib/net40/Syncfusion.Compression.Base.xml",
+        "lib/net45/Syncfusion.Compression.Base.dll",
+        "lib/net45/Syncfusion.Compression.Base.xml",
+        "lib/net451/Syncfusion.Compression.Base.dll",
+        "lib/net451/Syncfusion.Compression.Base.xml",
+        "lib/net46/Syncfusion.Compression.Base.dll",
+        "lib/net46/Syncfusion.Compression.Base.xml",
+        "lib/net6.0-windows7.0/Syncfusion.Compression.Base.dll",
+        "lib/net6.0-windows7.0/Syncfusion.Compression.Base.xml",
+        "syncfusion.compression.base.21.2.3.nupkg.sha512",
+        "syncfusion.compression.base.nuspec",
+        "syncfusion_logo.png"
+      ]
+    },
+    "Syncfusion.Licensing/21.2.3": {
+      "sha512": "9ZS+tE48qD3jtE0brkf0ZA5JnvxHOxll6IwJb7kNoJuJPuOUwLUGSmJ82fQ5VFRO5VtwONvKHDnvdJ5nAzeXKw==",
+      "type": "package",
+      "path": "syncfusion.licensing/21.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "lib/MonoAndroid90/Syncfusion.Licensing.dll",
+        "lib/Xamarin.Mac/Syncfusion.Licensing.dll",
+        "lib/Xamarin.iOS10/Syncfusion.Licensing.dll",
+        "lib/net40/Syncfusion.Licensing.dll",
+        "lib/net45/Syncfusion.Licensing.dll",
+        "lib/net451/Syncfusion.Licensing.dll",
+        "lib/net46/Syncfusion.Licensing.dll",
+        "lib/net6.0-windows7.0/Syncfusion.Licensing.dll",
+        "lib/net6.0/Syncfusion.Licensing.dll",
+        "lib/net7.0-windows7.0/Syncfusion.Licensing.dll",
+        "lib/net7.0/Syncfusion.Licensing.dll",
+        "lib/netstandard2.0/Syncfusion.Licensing.dll",
+        "lib/uap10.0/Syncfusion.Licensing.dll",
+        "syncfusion.licensing.21.2.3.nupkg.sha512",
+        "syncfusion.licensing.nuspec",
+        "syncfusion_logo.png"
+      ]
+    },
+    "Syncfusion.Pdf.WinForms/21.2.3": {
+      "sha512": "4aDAQ/I/Qao8JlQlfbb1v63Pa/DgLrPHdX8t9wQgi3WRnyoffaUwAn6SLu0GWpDJtlYNamAblfUyEde9ujftHw==",
+      "type": "package",
+      "path": "syncfusion.pdf.winforms/21.2.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "lib/net40/Syncfusion.Pdf.Base.dll",
+        "lib/net40/Syncfusion.Pdf.Base.xml",
+        "lib/net45/Syncfusion.Pdf.Base.dll",
+        "lib/net45/Syncfusion.Pdf.Base.xml",
+        "lib/net451/Syncfusion.Pdf.Base.dll",
+        "lib/net451/Syncfusion.Pdf.Base.xml",
+        "lib/net46/Syncfusion.Pdf.Base.dll",
+        "lib/net46/Syncfusion.Pdf.Base.xml",
+        "lib/net6.0-windows7.0/Syncfusion.Pdf.Base.dll",
+        "lib/net6.0-windows7.0/Syncfusion.Pdf.Base.xml",
+        "syncfusion.pdf.winforms.21.2.3.nupkg.sha512",
+        "syncfusion.pdf.winforms.nuspec",
+        "syncfusion_logo.png"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0-windows7.0": [
+      "Newtonsoft.Json >= 13.0.3",
+      "Syncfusion.Pdf.WinForms >= 21.2.3"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\kumar\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\Work\\winForm\\Project 8\\Project 8.csproj",
+      "projectName": "Project 8",
+      "projectPath": "D:\\Work\\winForm\\Project 8\\Project 8.csproj",
+      "packagesPath": "C:\\Users\\kumar\\.nuget\\packages\\",
+      "outputPath": "D:\\Work\\winForm\\Project 8\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\kumar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0-windows"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0-windows7.0": {
+          "targetAlias": "net7.0-windows",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0-windows7.0": {
+        "targetAlias": "net7.0-windows",
+        "dependencies": {
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.3, )"
+          },
+          "Syncfusion.Pdf.WinForms": {
+            "target": "Package",
+            "version": "[21.2.3, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WindowsForms": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
