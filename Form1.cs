@@ -4,6 +4,10 @@ namespace Project_8
     {
         string adPath;
 
+        //
+        // Form1: An advertisement screen which shows a slideshow of pictures on full screen
+        //
+
         public Form1(string adPath)
         {
             this.adPath = adPath;

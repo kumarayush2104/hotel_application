@@ -1,5 +1,6 @@
 ﻿[Serializable]
 
+// Customer Details model class
 public class CustomerData
 {
     public string name { get; set; }

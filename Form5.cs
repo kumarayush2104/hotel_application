@@ -1,25 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Design;
+﻿using System.Net.Sockets;
 
 namespace Project_8
 {
     public partial class Form5 : Form
     {
-        private Form form1, form3, form4;
-        private string folderPath;
+        private Form1? form1;
+        private Form3? form3;
+        private Form4? form4;
+        private string? folderPath;
+        private TcpListener tcpListener;
+        private List<TcpClient> clients;
+        private NetworkStream? networkStream;
+
+        //
+        // Form5: Launcher Screen of the application, it allows the user to set screen number for individual modules and
+        //        it also allows the user to set advertisement folder path for advertisement screen.
+        //
 
         public Form5()
         {
             InitializeComponent();
+            tcpListener = new TcpListener(System.Net.IPAddress.Any, 1234);
+            tcpListener.Start();
+            clients = new List<TcpClient>();
         }
 
         private void Form5_Load(object sender, EventArgs e)
@@ -42,9 +45,71 @@ namespace Project_8
 
             button1.Location = new Point(100, this.Height - button1.Height - 100);
             button2.Location = new Point(this.Width - button2.Width - 100, this.Height - button1.Height - 100);
-
-            MessageBox.Show("You can use Screen number as 0 if you don't want to use that section");
+            AcceptClients();
         }
+
+        //
+        // async AcceptClients(): Starts accepting tcpclients
+        //
+
+        private async void AcceptClients()
+        {
+            while (true)
+            {
+                try
+                {
+                    TcpClient client = await tcpListener.AcceptTcpClientAsync();
+                    clients.Add(client);
+                    await Task.Run(() =>
+                    {
+                        networkStream = client.GetStream();
+                        FetchData();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+
+        //
+        // async FetchData(): Starts a Service which recieves data from clients
+        //
+
+        private async void FetchData()
+        {
+            byte[] buffer = new byte[1024];
+            try
+            {
+                while (clients.Count() > 0 && networkStream != null)
+                {
+                    int bytesRead = await networkStream!.ReadAsync(buffer, 0, buffer.Length);
+                    if(bytesRead > 0) passMessage(buffer, bytesRead);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while receiving data: " + ex.Message);
+            }
+        }
+
+        //
+        // async passMessage(byte[] buffer, int bufferSize): Pass all the recieved message to all the clients,
+        //                                                   letting client handle which data they need or which they don't need
+        //
+
+        private async void passMessage(byte[] buffer, int bufferSize)
+        {
+            foreach (TcpClient client in clients)
+            {
+                await client.GetStream().WriteAsync(buffer, 0, bufferSize);
+            }
+        }
+
+        //
+        // button1_Click(object sender, EventArgs e): Checks for Screen values and advertisement path
+        //
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -52,22 +117,20 @@ namespace Project_8
             {
                 if (folderPath == null)
                 {
-                    MessageBox.Show("Advertisement Folder not selected");
+                    MessageBox.Show("Advertisement Folder not selected !");
                     return;
                 }
 
                 if (numericUpDown1.Value <= Screen.AllScreens.Length)
                 {
                     numericUpDown1.Enabled = false;
-                    var thread1 = new Thread(() =>
+                    CreateThread(() =>
                     {
                         form1 = new Form1(folderPath);
                         form1.StartPosition = FormStartPosition.Manual;
                         form1.Location = Screen.AllScreens[Convert.ToInt32(numericUpDown1.Value) - 1].Bounds.Location;
                         form1.ShowDialog();
                     });
-                    thread1.SetApartmentState(ApartmentState.STA);
-                    thread1.Start();
                 }
                 else
                 {
@@ -78,7 +141,7 @@ namespace Project_8
             if (numericUpDown2.Value != 0)
             {
                 numericUpDown2.Enabled = false;
-                var thread2 = new Thread(() =>
+                CreateThread(() =>
                 {
                     if (numericUpDown2.Value <= Screen.AllScreens.Length)
                     {
@@ -92,8 +155,6 @@ namespace Project_8
                         MessageBox.Show("Screen " + numericUpDown2.Value + " is not available !");
                     }
                 });
-                thread2.SetApartmentState(ApartmentState.STA);
-                thread2.Start();
             }
 
             if (numericUpDown4.Value != 0)
@@ -102,15 +163,13 @@ namespace Project_8
                 {
                     numericUpDown4.Value = (numericUpDown4.Value.Equals("")) ? 0 : numericUpDown4.Value;
                     numericUpDown4.Enabled = false;
-                    var thread3 = new Thread(() =>
+                    CreateThread(() =>
                     {
                         form4 = new Form4();
                         form4.StartPosition = FormStartPosition.Manual;
                         form4.Location = Screen.AllScreens[Convert.ToInt32(numericUpDown4.Value) - 1].Bounds.Location;
                         form4.ShowDialog();
                     });
-                    thread3.SetApartmentState(ApartmentState.STA);
-                    thread3.Start();
                 }
                 else
                 {
@@ -124,30 +183,20 @@ namespace Project_8
             this.WindowState = FormWindowState.Minimized;
         }
 
+        //
+        // CreateThread(ThreadStart threadStart): Method to start the thread
+        //
 
-        private void button2_Click(object sender, EventArgs e)
+        private void CreateThread(ThreadStart threadStart)
         {
-            if (form1 != null && form1.InvokeRequired)
-            {
-                form1.Invoke(new MethodInvoker(delegate { form1.Close(); }));
-            }
-
-            if (form3 != null && form3.InvokeRequired)
-            {
-                form3.Invoke(new MethodInvoker(delegate { form3.Close(); }));
-            }
-
-            if (form4 != null && form4.InvokeRequired)
-            {
-                form4.Invoke(new MethodInvoker(delegate { form4.Close(); }));
-            }
-
-            numericUpDown1.Enabled = true;
-            numericUpDown2.Enabled = true;
-            numericUpDown4.Enabled = true;
-            button1.Enabled = true;
-            button3.Enabled = true;
+            var thread = new Thread(threadStart);
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         }
+
+        //
+        // button3_Click(object sender, EventArgs e): Opens folderDialog and sets the advertisement folder's path
+        //
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -158,7 +207,65 @@ namespace Project_8
             {
                 folderPath = folderDialog.SelectedPath;
                 string[] pathSplit = folderPath.Split("\\");
-                button3.Text = pathSplit[pathSplit.Length - 1];
+                string folderName = pathSplit[pathSplit.Length - 1];
+                button3.Text = folderName;
+            }
+        }
+
+        //
+        // button2_Click(object sender, EventArgs e): closes all the form, clears all TcpClients and resets every numericUpDown
+        //
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CloseFormIfNotNull(form1!);
+            CloseFormNetwork(form3!);
+            CloseFormIfNotNull(form3!);
+            CloseFormNetwork(form4!);
+            CloseFormIfNotNull(form4!);
+
+            clients.Clear();
+
+            numericUpDown1.Enabled = true;
+            numericUpDown2.Enabled = true;
+            numericUpDown4.Enabled = true;
+            button1.Enabled = true;
+            button3.Enabled = true;
+        }
+
+        //
+        // CloseFormIfNotNull(Form form): Check if form is not null and closes it
+        //
+
+        private void CloseFormIfNotNull(Form form)
+        {
+            if (form != null && form.InvokeRequired)
+            {
+                form.Invoke(new MethodInvoker(delegate { form.Close(); }));
+            }
+            else if (form != null)
+            {
+                form.Close();
+            }
+        }
+
+        //
+        // CloseFormNetwork(Form3, Form4) *Overloading Method: closes connections throughout the forms
+        //
+
+        private void CloseFormNetwork(Form3 form)
+        {
+            if (form != null && form.InvokeRequired)
+            {
+                form.closeNetwork();
+            }
+        }
+
+        private void CloseFormNetwork(Form4 form)
+        {
+            if (form != null && form.InvokeRequired)
+            {
+                form.closeNetwork();
             }
         }
     }
