@@ -1,32 +1,24 @@
-﻿using Newtonsoft.Json;
-using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Project_8
+namespace hotel_application
 {
     public partial class Form3 : Form
     {
-        TcpListener tcpListener;
-        TcpClient tcpClient;
-        NetworkStream networkStream;
-        public Form3()
+        public DataTransferDelegate dataTransferDelegate;
+
+        //
+        // Form3: Customer Information Window, its takes information of customers and pass on to Customer confirmation window for confirmation
+        //
+
+        public Form3(DataTransferDelegate customerDataTransferDelegate)
         {
             InitializeComponent();
+            dataTransferDelegate = customerDataTransferDelegate;
         }
 
         private void Form3_Load(object sender, EventArgs e)
         {
-            tcpListener = new TcpListener(System.Net.IPAddress.Any, 1234);
-            tcpListener.Start();
-            tcpClient = tcpListener.AcceptTcpClient();
-            networkStream = tcpClient.GetStream();
-
-
-            FormBorderStyle = FormBorderStyle.None;
-            this.WindowState = FormWindowState.Maximized;
-
+            // Configuring Date Pickers
             dateTimePicker1.MinDate = DateTime.Now.AddYears(-60);
             dateTimePicker1.MaxDate = DateTime.Now.AddYears(-18);
 
@@ -36,65 +28,95 @@ namespace Project_8
             dateTimePicker3.MinDate = dateTimePicker2.Value.Date.AddDays(1);
             dateTimePicker3.MaxDate = dateTimePicker2.MaxDate.Date.AddMonths(1);
 
-            label7.Location = new Point(this.Width / 2 - label7.Width / 2, 50);
+            // Main Title
+            label1.Location = new Point(this.Width / 2 - label1.Width / 2, 50);
 
-            label1.Location = new Point(50, 150 + label7.Height);
-            textBox1.Location = new Point(label2.Width + 70, 150 + label7.Height);
-            label5.Location = new Point(label2.Width + textBox1.Width + 100, 150 + label7.Height);
-            dateTimePicker1.Location = new Point(label2.Width + textBox1.Width + label5.Width + 120, 150 + label7.Height);
+            // Name Label and its Input field, Date of Birth label and its datepicker
+            label2.Location = new Point(50, 150 + label1.Height);
+            textBox1.Location = new Point(label4.Width + 70, 150 + label1.Height);
+            label3.Location = new Point(label4.Width + textBox1.Width + 100, 150 + label1.Height);
+            dateTimePicker1.Location = new Point(label4.Width + textBox1.Width + label3.Width + 120, 150 + label1.Height);
 
-            label2.Location = new Point(50, label1.Height + label7.Height + 200);
-            dateTimePicker2.Location = new Point(label2.Width + 70, label1.Height + label7.Height + 200);
-            label3.Location = new Point(label2.Width + dateTimePicker2.Width + 100, label1.Height + label7.Height + 200);
-            dateTimePicker3.Location = new Point(label2.Width + dateTimePicker2.Width + 150 + label3.Width, label1.Height + label7.Height + 200);
+            // Staying from and Staying till label and their datepicker
+            label4.Location = new Point(50, label1.Height + label2.Height + 200);
+            dateTimePicker2.Location = new Point(label4.Width + 70, label1.Height + label2.Height + 200);
+            label5.Location = new Point(label4.Width + textBox1.Width + 100, label1.Height + label2.Height + 200);
+            dateTimePicker3.Location = new Point(label4.Width + textBox1.Width + label3.Width + 120, label1.Height + label2.Height + 200);
 
-            label4.Location = new Point(50, label1.Height + label7.Height + 250 + label2.Height);
-            radioButton1.Location = new Point(label2.Width + 70, (label4.Height - radioButton2.Height) + label1.Height + label7.Height + 250 + label2.Height);
-            radioButton2.Location = new Point(label2.Width + 100 + radioButton1.Width, (label4.Height - radioButton2.Height) + label1.Height + label7.Height + 250 + label2.Height);
-            radioButton3.Location = new Point(label2.Width + +130 + radioButton1.Width + radioButton2.Width, (label4.Height - radioButton2.Height) + label1.Height + label7.Height + 250 + label2.Height);
+            // Gender label and its selectors
+            label6.Location = new Point(50, label1.Height + label2.Height * 2 + 250);
+            radioButton1.Location = new Point(label4.Width + 70, label1.Height + label2.Height * 2 + 250);
+            radioButton2.Location = new Point(label4.Width + radioButton1.Width + 100, label1.Height + label2.Height * 2 + 250);
+            radioButton3.Location = new Point(label4.Width + radioButton1.Width + radioButton2.Width + 130, label1.Height + label2.Height * 2 + 250);
 
-            label6.Location = new Point(50, label1.Height + label7.Height + 300 + label4.Height + label2.Height);
-            textBox3.Location = new Point(label6.Width + 70, label1.Height + label7.Height + 300 + label4.Height + label2.Height);
-            label8.Location = new Point(label6.Width + textBox3.Width + 100, label1.Height + label7.Height + 300 + label4.Height + label2.Height);
-            textBox4.Location = new Point(label6.Width + textBox3.Width + label8.Width + 120, label1.Height + label7.Height + 300 + label4.Height + label2.Height);
+            // Contact number and email address label and their textfields
+            label7.Location = new Point(50, label1.Height + label2.Height * 3 + 300);
+            textBox2.Location = new Point(label7.Width + 70, label1.Height + label2.Height * 3 + 300);
+            label8.Location = new Point(label7.Width + textBox2.Width + 100, label1.Height + label2.Height * 3 + 300);
+            textBox3.Location = new Point(label7.Width + textBox2.Width + label8.Width + 130, label1.Height + label2.Height * 3 + 300);
 
+            // Submit button
             button1.Location = new Point(this.Width / 2 - button1.Width / 2, this.Height - button1.Height - 50);
         }
 
-        private bool validation()
+        // ValidateTextfields(): Validates the textfields
+        private bool ValidateTextfields()
         {
-            if (!Regex.IsMatch(textBox1.Text, @"(\w){2,}")) return false;
-            else if (!Regex.IsMatch(textBox3.Text, @"^[6789](\d){9}")) return false;
-            else if (!Regex.IsMatch(textBox4.Text, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")) return false;
+            if (!Regex.IsMatch(textBox1.Text, @"^[A-Za-z\s]+$")) return false;
+            else if (!Regex.IsMatch(textBox2.Text, @"^[6789](\d){9}")) return false;
+            else if (!Regex.IsMatch(textBox3.Text, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")) return false;
             return true;
         }
 
-        public string genderBox()
+        // GenderBoxResult(): Checks and returns the selected gender
+        private string GenderBoxResult()
         {
             if (radioButton1.Checked) return radioButton1.Text;
-            else if(radioButton2.Checked) return radioButton2.Text;
+            else if (radioButton2.Checked) return radioButton2.Text;
             else return radioButton3.Text;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        // onSubmitButton(object sender, EventArgs e): sends data for the customer's confirmation through callbacks
+        private void onSubmitButton(object sender, EventArgs e)
         {
-            if(!validation())
+            if (ValidateTextfields())
             {
-                MessageBox.Show("Invalid Data !!");
-            } else
+                // Get values entered by user
+                string name = textBox1.Text;
+                string contact = textBox2.Text;
+                string email = textBox3.Text;
+                string gender = GenderBoxResult().ToString();
+                string dob = dateTimePicker1.Value.ToShortDateString();
+                string stayFromDate = dateTimePicker2.Value.ToShortDateString();
+                string stayTillDate = dateTimePicker3.Value.ToShortDateString();
+
+                CustomerData customer = new(name, contact, email, gender, dob, stayFromDate, stayTillDate);
+                dataTransferDelegate.onCustomerDataAcquire(customer);
+
+            }
+            else
             {
-                CustomerData customerData = new CustomerData { name = textBox1.Text, contact = textBox3.Text, gender = genderBox(), email = textBox4.Text, fromDate = dateTimePicker2.Value.ToShortDateString(), dob = dateTimePicker1.Value.ToShortDateString(), toDate = dateTimePicker3.Value.ToShortDateString()};
-                string jsonData = JsonConvert.SerializeObject(customerData);
-                byte[] buffer = Encoding.ASCII.GetBytes(jsonData);
-                networkStream.Write(buffer);
+                Task.Run(() => MessageBox.Show("There is some problem with the Form data\nPlease correct it and resubmit !", "Invalid Form Data", MessageBoxButtons.OK, MessageBoxIcon.Error));
             }
         }
 
-        public void closeNetwork()
+        // Implementing interface callbacks and their actions
+        public void UserAgreedWithIdentity()
         {
-            networkStream.Close();
-            tcpClient.Close();
-            tcpListener.Stop();
+            MessageBox.Show("User has submitted their data !", "User data submitted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+        }
+
+        public void UserDeniedTheIdentity()
+        {
+            MessageBox.Show(this, "User's Data is incorrect\nPlease correct it and resubmit !", "Incorrent UserData", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void FormisClosing(object sender, EventArgs e)
+        {
+            dataTransferDelegate.onFormClose(this);
         }
     }
 }

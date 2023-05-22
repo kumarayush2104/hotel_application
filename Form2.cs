@@ -1,80 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Project_8
+﻿namespace hotel_application
 {
     public partial class Form2 : Form
     {
+        private readonly string advertisementFolderLocation;
+        public DataTransferDelegate dataTransferDelegate;
 
-        private bool isDrawing = false;
-        private Point capturedPoint;
-        private Bitmap signatureBitmap;
+        //
+        // Form2: Advertisement Screen, which shows infinite slideshow of pictures inside the provided path
+        //
 
-        public Form2()
+        public Form2(string advertisementFolderLocation, DataTransferDelegate dataTransferDelegate)
         {
             InitializeComponent();
+            this.advertisementFolderLocation = advertisementFolderLocation;
+            this.dataTransferDelegate = dataTransferDelegate;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            FormBorderStyle = FormBorderStyle.None;
-            this.WindowState = FormWindowState.Maximized;
-            int x = (this.Width - label1.Size.Width) / 2;
-            label1.Height = 100;
-            label1.Location = new Point(x, 50);
-            button1.Location = new Point(50, this.Height - button1.Height - 50);
-            button2.Location = new Point(this.Width - button2.Size.Width - 50, this.Height - button2.Height - 50);
-            pictureBox1.Width = this.Width - 100;
-            pictureBox1.Height = this.Height - 200 - button1.Height - label1.Height;
-            pictureBox1.Location = new Point(50, 50 + label1.Height + 50);
-            signatureBitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            ShowPictures(this.advertisementFolderLocation);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            pictureBox1.Image = null;
-            signatureBitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-        }
+        // showPictures(string path): Fetchs all the files from the provided path and shows the picture in the PictureBox
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void ShowPictures(string path)
         {
-            signatureBitmap.Save("D:/Sign.png", ImageFormat.Png);
-            MessageBox.Show("Signature Saved Successfully");
-            signatureBitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-        }
-
-        private void pictureBox1_mouseDown(object sender, MouseEventArgs e)
-        {
-            isDrawing = true;
-            capturedPoint = e.Location;
-        }
-
-        private void pictureBox1_mouseUp(object sender, MouseEventArgs e)
-        {
-            isDrawing = false;
-        }
-
-        private void pictureBox1_mouseMove(object sender, MouseEventArgs e)
-        {
-            if(isDrawing)
+            while (true)
             {
-                using (Graphics g = Graphics.FromImage(signatureBitmap))
+                string[] files = Directory.GetFiles(path);
+                await Task.Delay(2000);
+                foreach (string file in files)
                 {
-                    Pen pen = new Pen(Color.White, 3);
-                    g.DrawLine(pen, capturedPoint, e.Location);
-                    capturedPoint = e.Location;
-                }
+                    if (IsImageFile(file))
+                    {
+                        try
+                        {
+                            using FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                            pictureBox1.Image = await Task.Run(() => Image.FromStream(stream));
+                        }
+                        catch
+                        {
+                            Console.WriteLine("There was a problem loading this picture");
+                        }
 
-                pictureBox1.Image = signatureBitmap;
+                        await Task.Delay(5000);
+                        pictureBox1.Image.Dispose();
+                    }
+                }
             }
+        }
+
+        // IsImageFile(string file): Verifies the provided file if it is a picture or not
+
+        private static bool IsImageFile(string file)
+        {
+            return file.EndsWith(".jpg") || file.EndsWith(".jpeg") || file.EndsWith(".png");
+        }
+
+        // Implementing interface callbacks and their actions
+
+        private void FormisClosing(object sender, EventArgs e)
+        {
+            dataTransferDelegate.onFormClose(this);
         }
     }
 }
