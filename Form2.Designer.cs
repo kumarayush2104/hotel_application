@@ -54,6 +54,7 @@
             Text = "Advertisement";
             WindowState = FormWindowState.Maximized;
             Load += Form2_Load;
+            FormClosing += FormisClosing;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }

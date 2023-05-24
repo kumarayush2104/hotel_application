@@ -260,6 +260,7 @@
             Text = "Customer Information";
             WindowState = FormWindowState.Maximized;
             Load += Form3_Load;
+            FormClosing += FormisClosing;
             ResumeLayout(false);
             PerformLayout();
         }

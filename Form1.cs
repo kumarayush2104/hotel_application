@@ -194,7 +194,7 @@ namespace hotel_application
 
                 numericUpDown1.Enabled = true;
                 button1.Enabled = true;
-                if (button5.Visible) button5.Visible = false;
+                button5.Visible = false;
             }
 
             if (customerInformationWindow != null && customerInformationWindow!.IsHandleCreated)
@@ -284,26 +284,20 @@ namespace hotel_application
 
         public void UserMessage(bool agree)
         {
-            if (agree)
+            Task.Run(() =>
             {
-                Task.Run(() =>
+                if (customerInformationWindow != null && customerInformationWindow.IsHandleCreated)
                 {
-                    if (customerInformationWindow != null && customerInformationWindow!.IsHandleCreated)
-                        customerInformationWindow!.Invoke(new Action(customerInformationWindow.UserAgreedWithIdentity));
+                    if (agree)
+                        customerInformationWindow.Invoke(new Action(customerInformationWindow.UserAgreedWithIdentity));
                     else
-                        MessageBox.Show("Customer Information Window is not running !", "Customer Information Window", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                });
-            }
-            else
-            {
-                Task.Run(() =>
+                        customerInformationWindow.Invoke(new Action(customerInformationWindow.UserDeniedTheIdentity));
+                }
+                else
                 {
-                    if (customerInformationWindow != null && customerInformationWindow!.IsHandleCreated)
-                        customerInformationWindow?.Invoke(new Action(customerInformationWindow.UserDeniedTheIdentity));
-                    else
-                        MessageBox.Show("Customer Information Window is not running !", "Customer Information Window", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                });
-            }
+                    MessageBox.Show("Customer Information Window is not running!", "Customer Information Window", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
+            });
         }
 
         public void onFormClose(Form form)

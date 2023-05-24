@@ -92,7 +92,6 @@ namespace hotel_application
 
                 CustomerData customer = new(name, contact, email, gender, dob, stayFromDate, stayTillDate);
                 dataTransferDelegate.onCustomerDataAcquire(customer);
-
             }
             else
             {
@@ -103,7 +102,7 @@ namespace hotel_application
         // Implementing interface callbacks and their actions
         public void UserAgreedWithIdentity()
         {
-            MessageBox.Show("User has submitted their data !", "User data submitted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "User has submitted their data !", "User data submitted", MessageBoxButtons.OK, MessageBoxIcon.Information);
             textBox1.Text = "";
             textBox2.Text = "";
             textBox3.Text = "";

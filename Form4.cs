@@ -182,7 +182,7 @@ namespace hotel_application
                 graphics.DrawString("Staying till: " + currentCustomerData?.stayTillDate, font, PdfBrushes.Black, new PointF(0, 120));
 
                 // Create a new digital signature
-                PdfCertificate certificate = new PdfCertificate("D:/certificate.pfx", "utu@amtics");
+                PdfCertificate certificate = new PdfCertificate("certificate.pfx", "utu@amtics");
                 PdfSignature signature = new PdfSignature(document, page, certificate, currentCustomerData?.contact);
                 signature.SignedName = currentCustomerData?.name;
                 signature.ContactInfo = currentCustomerData?.email;
